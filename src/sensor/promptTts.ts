@@ -38,6 +38,8 @@ function cleanupAudioElement(): void {
     activeAbortController = null;
   }
   if (activeAudio) {
+    activeAudio.onended = null;
+    activeAudio.onerror = null;
     activeAudio.pause();
     activeAudio.src = '';
     activeAudio = null;
@@ -100,7 +102,12 @@ function speakWithBrowserSynthesis(
   };
 
   if (fallbackNotice) {
-    options.onError?.(fallbackNotice);
+    // Keep playback active when falling back to browser synthesis; only report if synthesis fails.
+    utterance.onstart = () => {
+      if (token === playbackToken) {
+        options.onStart?.();
+      }
+    };
   }
   window.speechSynthesis.speak(utterance);
 }

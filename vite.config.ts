@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import {
   handleAuthEndpoint,
   handleEvaluateEndpoint,
+  handlePromptsEndpoint,
   handleTtsEndpoint,
 } from './server/apiHandlers.ts';
 
@@ -24,6 +25,14 @@ function localApiDevPlugin(mode: string): Plugin {
       server.middlewares.use('/api/evaluate', (req, res, next) => {
         if (!req.url || req.url === '/' || req.url.startsWith('/?')) {
           void handleEvaluateEndpoint(req, res, env);
+          return;
+        }
+        next();
+      });
+
+      server.middlewares.use('/api/prompts', (req, res, next) => {
+        if (!req.url || req.url === '/' || req.url.startsWith('/?')) {
+          void handlePromptsEndpoint(req, res, env);
           return;
         }
         next();

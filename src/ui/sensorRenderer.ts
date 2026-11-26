@@ -17,6 +17,7 @@ export const SENSOR_HARD_CAP_MS = 135_000;
 
 export interface SensorRenderParams {
   readonly prompt: SensorPrompt;
+  readonly levelPrompts: readonly SensorPrompt[];
   readonly promptPosition: { readonly current: number; readonly total: number };
   readonly state: SensorRuntimeState;
   readonly modelStatus: ModelStatus;
@@ -27,6 +28,9 @@ export interface SensorActions {
   readonly onSelectLevel: (level: CefrLevel) => void;
   readonly onSelectEvaluator: (provider: EvaluatorProvider) => void;
   readonly onNextPrompt: () => void;
+  readonly onSelectPrompt: (index: number) => void;
+  readonly onTogglePromptList: () => void;
+  readonly onGenerateAiPrompts: () => void;
   readonly onToggleHint: () => void;
   readonly onToggleSettings: () => void;
   readonly onToggleAutoSpeak: () => void;
@@ -686,9 +690,11 @@ export function renderSensorWorkspace(
   container: HTMLElement,
   params: SensorRenderParams,
 ): void {
-  const { prompt, promptPosition, state, modelStatus, micUnsupportedReason } = params;
+  const { prompt, levelPrompts, promptPosition, state, modelStatus, micUnsupportedReason } =
+    params;
   const isRecording = state.phase === 'recording';
   const isTranscribing = state.phase === 'transcribing';
+  const busyWithRecording = isRecording || isTranscribing;
   const shownMs =
     state.phase === 'evaluated' || state.phase === 'transcribing'
       ? state.lastDurationMs
@@ -811,23 +817,128 @@ export function renderSensorWorkspace(
     return '';
   })();
 
+  const promptListHtml = state.showPromptList
+    ? `
+      <div class="rounded-xl border border-slate-800/90 bg-slate-900/65 p-4 text-xs animate-panel-reveal" data-testid="sensor-prompt-list">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+          <div>
+            <span class="font-medium text-slate-200">Oppgaver for nivå ${escapeHtml(state.selectedLevel)} (${levelPrompts.length})</span>
+            <span class="ml-2 text-slate-400">Inspirert av Norskprøven muntlig</span>
+          </div>
+          ${
+            state.groqConfigured
+              ? `
+                <button
+                  type="button"
+                  data-sensor-action="generate-ai-prompts"
+                  data-testid="generate-ai-prompts-list-btn"
+                  ${busyWithRecording || state.generatingPrompts ? 'disabled' : ''}
+                  class="cursor-pointer rounded-lg border border-[#849e52]/50 bg-[#1e2614]/80 px-2.5 py-1 text-xs font-medium text-[#d2e4ab] transition hover:border-[#a3bd6f] disabled:cursor-wait disabled:opacity-60"
+                >
+                  ${state.generatingPrompts ? 'Lager 4 nye...' : '+ Lag 4 nye med AI'}
+                </button>
+              `
+              : ''
+          }
+        </div>
+        <div class="mt-2.5 grid max-h-72 gap-2 overflow-y-auto pr-1" style="scrollbar-width: thin; scrollbar-color: #334155 transparent;">
+          ${levelPrompts
+            .map((item, idx) => {
+              const isCurrent = idx === promptPosition.current - 1;
+              return `
+                <button
+                  type="button"
+                  data-sensor-action="select-prompt"
+                  data-prompt-index="${idx}"
+                  ${busyWithRecording ? 'disabled' : ''}
+                  class="flex w-full cursor-pointer flex-col gap-1 rounded-lg border px-3 py-2 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                    isCurrent
+                      ? 'border-[#849e52]/60 bg-[#1e2614]/70 text-slate-100'
+                      : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:border-slate-700 hover:bg-slate-900/80'
+                  }"
+                >
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-medium text-[#bfd591]">
+                      ${idx + 1}. ${escapeHtml(item.topic)}
+                    </span>
+                    <div class="flex items-center gap-1.5 text-[11px] text-slate-400">
+                      ${item.taskType ? `<span>${escapeHtml(item.taskType)}</span>` : ''}
+                      ${item.isAiGenerated ? '<span class="rounded border border-[#849e52]/40 bg-[#1e2614]/80 px-1.5 py-0.2 text-[10px] text-[#d2e4ab]">AI</span>' : ''}
+                    </div>
+                  </div>
+                  <p class="line-clamp-2 text-xs text-slate-300" lang="nb">${escapeHtml(item.promptNb)}</p>
+                </button>
+              `;
+            })
+            .join('')}
+        </div>
+      </div>
+    `
+    : '';
+
+  const promptGenErrorHtml = state.promptGenError
+    ? `
+      <div class="rounded-xl border border-red-500/35 bg-red-950/20 px-4 py-2.5 text-xs text-red-300">
+        ${escapeHtml(state.promptGenError)}
+      </div>
+    `
+    : '';
+
   container.innerHTML = `
-    <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center justify-between gap-2.5">
       <div class="inline-flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/70 p-1" data-testid="sensor-level-tabs">
         ${levelTabs}
       </div>
 
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-slate-400">
-          Oppgave ${promptPosition.current}/${promptPosition.total}
-        </span>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          data-sensor-action="toggle-prompt-list"
+          data-testid="toggle-prompt-list-btn"
+          class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs transition ${
+            state.showPromptList
+              ? 'border-[#849e52]/55 bg-[#1e2614]/80 text-[#d2e4ab]'
+              : 'border-slate-700/60 bg-slate-950/70 text-slate-300 hover:border-[#849e52]/60 hover:text-[#d2e4ab]'
+          }"
+        >
+          Oppgaver ${promptPosition.current}/${promptPosition.total} ${state.showPromptList ? '▲' : '▼'}
+        </button>
         <button
           type="button"
           data-sensor-action="next-prompt"
-          ${isRecording || isTranscribing ? 'disabled' : ''}
+          ${busyWithRecording ? 'disabled' : ''}
           class="cursor-pointer rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-1.5 text-xs text-slate-300 transition hover:border-[#849e52]/60 hover:text-[#d2e4ab] disabled:cursor-not-allowed disabled:opacity-50"
         >
           Nytt spørsmål
+        </button>
+        ${
+          state.groqConfigured
+            ? `
+              <button
+                type="button"
+                data-sensor-action="generate-ai-prompts"
+                data-testid="generate-ai-prompts-btn"
+                ${busyWithRecording || state.generatingPrompts ? 'disabled' : ''}
+                class="cursor-pointer rounded-lg border border-[#849e52]/45 bg-[#1e2614]/65 px-2.5 py-1.5 text-xs text-[#d2e4ab] transition hover:border-[#a3bd6f] disabled:cursor-wait disabled:opacity-60"
+              >
+                ${state.generatingPrompts ? 'Lager...' : '+ AI-oppgaver'}
+              </button>
+            `
+            : ''
+        }
+        <button
+          type="button"
+          data-sensor-action="toggle-auto-speak"
+          data-testid="auto-tts-toggle-btn"
+          aria-pressed="${String(state.autoSpeakFeedback)}"
+          title="Slå automatisk opplesing av spørsmål og tilbakemelding på eller av"
+          class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs transition ${
+            state.autoSpeakFeedback
+              ? 'border-[#849e52]/55 bg-[#1e2614]/80 text-[#d2e4ab]'
+              : 'border-slate-700/60 bg-slate-950/70 text-slate-400 hover:text-slate-200'
+          }"
+        >
+          ${state.autoSpeakFeedback ? 'Auto-lyd: På' : 'Auto-lyd: Av'}
         </button>
         <button
           type="button"
@@ -840,6 +951,9 @@ export function renderSensorWorkspace(
       </div>
     </div>
 
+    ${promptGenErrorHtml}
+    ${promptListHtml}
+
     ${
       state.showSettings
         ? renderSettingsPanel(
@@ -848,7 +962,7 @@ export function renderSensorWorkspace(
             state.fishAudioConfigured,
             state.autoSpeakFeedback,
             state.aiStatus,
-            isRecording || isTranscribing,
+            busyWithRecording,
           )
         : ''
     }
@@ -860,10 +974,13 @@ export function renderSensorWorkspace(
       <span class="hud-corner hud-corner-br"></span>
 
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="inline-flex items-center gap-2 rounded-full border border-[#849e52]/30 bg-[#1e2614]/55 px-3 py-1 text-xs text-[#bfd591]">
-          <span class="h-1.5 w-1.5 rounded-full bg-[#a3bd6f]"></span>
-          ${escapeHtml(prompt.level)} · ${escapeHtml(prompt.topic)}
-        </span>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-2 rounded-full border border-[#849e52]/30 bg-[#1e2614]/55 px-3 py-1 text-xs text-[#bfd591]">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#a3bd6f]"></span>
+            ${escapeHtml(prompt.level)}${prompt.taskType ? ` · ${escapeHtml(prompt.taskType)}` : ''} · ${escapeHtml(prompt.topic)}
+          </span>
+          ${prompt.isAiGenerated ? '<span class="rounded-full border border-[#849e52]/40 bg-[#1e2614]/70 px-2 py-0.5 text-[11px] text-[#d2e4ab]">AI-forslag</span>' : ''}
+        </div>
 
         <button
           type="button"
@@ -999,6 +1116,21 @@ export function bindSensorClickActions(
     }
     if (action === 'next-prompt') {
       actions.onNextPrompt();
+      return;
+    }
+    if (action === 'toggle-prompt-list') {
+      actions.onTogglePromptList();
+      return;
+    }
+    if (action === 'select-prompt') {
+      const idx = Number(button.dataset.promptIndex);
+      if (Number.isInteger(idx) && idx >= 0) {
+        actions.onSelectPrompt(idx);
+      }
+      return;
+    }
+    if (action === 'generate-ai-prompts') {
+      actions.onGenerateAiPrompts();
       return;
     }
     if (action === 'toggle-hint') {

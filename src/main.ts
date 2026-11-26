@@ -9,7 +9,10 @@ import {
 import rawDeck from './data/deck.json';
 import rawSensorPrompts from './data/sensorPrompts.json';
 import { bindKeyboardControls } from './input/keyboard.ts';
-import { evaluateWithGroq } from './sensor/groqClient.ts';
+import {
+  evaluateWithGroq,
+  generateSimilarPromptsWithGroq,
+} from './sensor/groqClient.ts';
 import { speakNorwegianText, stopSpeakingPrompt } from './sensor/promptTts.ts';
 import { evaluateSensorResponse } from './sensor/rubricEvaluator.ts';
 import { createSensorLlmClient, detectWebGpuSupport } from './sensor/sensorLlmClient.ts';
@@ -33,8 +36,12 @@ import {
   saveStoredCards,
 } from './storage/deckStorage.ts';
 import {
+  appendCustomSensorPrompts,
   clearSensorHistory,
+  loadAutoTtsPreference,
+  loadCustomSensorPrompts,
   loadSensorHistory,
+  saveAutoTtsPreference,
   saveSensorAttempt,
 } from './storage/sensorStorage.ts';
 import type { CardContent, StoredSrsCard } from './types/card.ts';
@@ -181,7 +188,7 @@ const runtime: AppRuntimeState = {
     evaluatorProvider: 'groq',
     groqConfigured: false,
     fishAudioConfigured: false,
-    autoSpeakFeedback: true,
+    autoSpeakFeedback: loadAutoTtsPreference(),
     groqLoading: false,
     aiCritique: null,
     aiErrorMessage: null,
@@ -193,6 +200,10 @@ const runtime: AppRuntimeState = {
     showHint: false,
     showFollowUp: false,
     showSettings: false,
+    showPromptList: false,
+    customPrompts: [],
+    generatingPrompts: false,
+    promptGenError: null,
     speakingTarget: null,
     ttsStatusMessage: null,
   },
@@ -206,19 +217,27 @@ function defaultSpeechState(): SpeechPanelState {
 }
 
 function getPromptsForLevel(level: CefrLevel): readonly SensorPrompt[] {
-  return SENSOR_PROMPTS.filter((p) => p.level === level);
+  return [
+    ...SENSOR_PROMPTS.filter((p) => p.level === level),
+    ...runtime.sensor.customPrompts.filter((p) => p.level === level),
+  ];
 }
 
 function getActiveSensorPrompt(): {
   readonly prompt: SensorPrompt;
+  readonly levelPrompts: readonly SensorPrompt[];
   readonly current: number;
   readonly total: number;
 } {
   const list = getPromptsForLevel(runtime.sensor.selectedLevel);
-  const idx = runtime.sensor.promptIndexByLevel[runtime.sensor.selectedLevel] % list.length;
+  const idx =
+    list.length > 0
+      ? runtime.sensor.promptIndexByLevel[runtime.sensor.selectedLevel] % list.length
+      : 0;
   const prompt = list[idx] ?? SENSOR_PROMPTS[0]!;
   return {
     prompt,
+    levelPrompts: list,
     current: idx + 1,
     total: list.length,
   };
@@ -321,14 +340,23 @@ function updateModeChrome(): void {
 }
 
 function renderSensor(): void {
-  const { prompt, current, total } = getActiveSensorPrompt();
+  const { prompt, levelPrompts, current, total } = getActiveSensorPrompt();
   renderSensorWorkspace(sensorWorkspace!, {
     prompt,
+    levelPrompts,
     promptPosition: { current, total },
     state: runtime.sensor,
     modelStatus: runtime.modelStatus,
     micUnsupportedReason: localWhisper.unsupportedReason(),
   });
+}
+
+function maybeAutoSpeakActivePrompt(): void {
+  if (!runtime.sensor.autoSpeakFeedback || runtime.mode !== 'sensor') {
+    return;
+  }
+  const { prompt } = getActiveSensorPrompt();
+  speakSensorText(prompt.promptNb, 'prompt');
 }
 
 async function renderCard(preserveCardState: boolean = false): Promise<void> {
@@ -394,6 +422,7 @@ function switchMode(nextMode: AppMode): void {
     void renderCard(true);
   } else {
     renderSensor();
+    maybeAutoSpeakActivePrompt();
   }
 }
 
@@ -1015,11 +1044,15 @@ async function bootstrapApp(session: AuthSessionStatus): Promise<void> {
   runtime.engine = engine;
 
   const initialCards = await initializeDeckStore(INITIAL_DECK, engine);
-  const history = await loadSensorHistory();
+  const [history, customPrompts] = await Promise.all([
+    loadSensorHistory(),
+    loadCustomSensorPrompts(),
+  ]);
   runtime.sensor = {
     ...runtime.sensor,
     webGpuAvailable,
     history,
+    customPrompts,
     addedCardIds: initialCards.map((c) => c.content.id),
   };
   runtime.isBusy = false;
@@ -1062,11 +1095,13 @@ async function bootstrapApp(session: AuthSessionStatus): Promise<void> {
           aiCritique: null,
           aiErrorMessage: null,
           errorMessage: null,
+          promptGenError: null,
           showFollowUp: false,
           speakingTarget: null,
           ttsStatusMessage: null,
         };
         renderSensor();
+        maybeAutoSpeakActivePrompt();
       },
       onSelectEvaluator: (provider) => {
         runtime.sensor = {
@@ -1097,12 +1132,118 @@ async function bootstrapApp(session: AuthSessionStatus): Promise<void> {
           aiCritique: null,
           aiErrorMessage: null,
           errorMessage: null,
+          promptGenError: null,
           showHint: false,
           showFollowUp: false,
           speakingTarget: null,
           ttsStatusMessage: null,
         };
         renderSensor();
+        maybeAutoSpeakActivePrompt();
+      },
+      onSelectPrompt: (index) => {
+        stopSpeakingPrompt();
+        const level = runtime.sensor.selectedLevel;
+        const list = getPromptsForLevel(level);
+        if (list.length === 0) {
+          return;
+        }
+        const safeIdx = Math.max(0, Math.min(list.length - 1, index));
+        runtime.sensor = {
+          ...runtime.sensor,
+          promptIndexByLevel: {
+            ...runtime.sensor.promptIndexByLevel,
+            [level]: safeIdx,
+          },
+          phase: 'ready',
+          elapsedMs: 0,
+          lastDurationMs: 0,
+          transcript: '',
+          evaluation: null,
+          groqLoading: false,
+          aiCritique: null,
+          aiErrorMessage: null,
+          errorMessage: null,
+          promptGenError: null,
+          showHint: false,
+          showFollowUp: false,
+          speakingTarget: null,
+          ttsStatusMessage: null,
+        };
+        renderSensor();
+        maybeAutoSpeakActivePrompt();
+      },
+      onTogglePromptList: () => {
+        runtime.sensor = {
+          ...runtime.sensor,
+          showPromptList: !runtime.sensor.showPromptList,
+        };
+        renderSensor();
+      },
+      onGenerateAiPrompts: () => {
+        if (runtime.sensor.generatingPrompts || !runtime.sensor.groqConfigured) {
+          return;
+        }
+        const targetLevel = runtime.sensor.selectedLevel;
+        const existingForLevel = getPromptsForLevel(targetLevel);
+        const previousCount = existingForLevel.length;
+
+        runtime.sensor = {
+          ...runtime.sensor,
+          generatingPrompts: true,
+          promptGenError: null,
+        };
+        renderSensor();
+
+        void generateSimilarPromptsWithGroq({
+          level: targetLevel,
+          existingPrompts: existingForLevel.map((p) => p.promptNb),
+          count: 4,
+        })
+          .then(async (newPrompts) => {
+            const updatedCustom = await appendCustomSensorPrompts(newPrompts);
+            runtime.sensor = {
+              ...runtime.sensor,
+              customPrompts: updatedCustom,
+              generatingPrompts: false,
+              promptGenError: null,
+              showPromptList: true,
+              promptIndexByLevel: {
+                ...runtime.sensor.promptIndexByLevel,
+                [targetLevel]: previousCount,
+              },
+              phase: 'ready',
+              elapsedMs: 0,
+              lastDurationMs: 0,
+              transcript: '',
+              evaluation: null,
+              groqLoading: false,
+              aiCritique: null,
+              aiErrorMessage: null,
+              errorMessage: null,
+              showHint: false,
+              showFollowUp: false,
+              speakingTarget: null,
+              ttsStatusMessage: null,
+            };
+            if (runtime.mode === 'sensor') {
+              renderSensor();
+              maybeAutoSpeakActivePrompt();
+            }
+          })
+          .catch((err: unknown) => {
+            runtime.sensor = {
+              ...runtime.sensor,
+              generatingPrompts: false,
+              promptGenError:
+                err instanceof Error
+                  ? err.message
+                  : 'Kunne ikke lage nye spørsmål med AI.',
+            };
+            if (runtime.mode === 'sensor') {
+              renderSensor();
+            }
+          });
       },
       onToggleHint: () => {
         runtime.sensor = {
@@ -1119,9 +1260,15 @@ async function bootstrapApp(session: AuthSessionStatus): Promise<void> {
         renderSensor();
       },
       onToggleAutoSpeak: () => {
+        const nextAutoSpeak = !runtime.sensor.autoSpeakFeedback;
+        saveAutoTtsPreference(nextAutoSpeak);
+        if (!nextAutoSpeak) {
+          stopSpeakingPrompt();
+        }
         runtime.sensor = {
           ...runtime.sensor,
-          autoSpeakFeedback: !runtime.sensor.autoSpeakFeedback,
+          autoSpeakFeedback: nextAutoSpeak,
+          speakingTarget: nextAutoSpeak ? runtime.sensor.speakingTarget : null,
         };
         renderSensor();
       },

@@ -1,10 +1,40 @@
-import type { AiSensorCritique, CefrLevel } from '../types/sensor.ts';
+import type { AiSensorCritique, CefrLevel, SensorPrompt } from '../types/sensor.ts';
 
 export interface GroqEvaluationInput {
   readonly level: CefrLevel;
   readonly promptNb: string;
   readonly transcript: string;
   readonly durationSeconds: number;
+}
+
+export interface GroqGeneratePromptsInput {
+  readonly level: CefrLevel;
+  readonly existingPrompts: readonly string[];
+  readonly count?: number;
+}
+
+export async function generateSimilarPromptsWithGroq(
+  input: GroqGeneratePromptsInput,
+): Promise<SensorPrompt[]> {
+  const response = await fetch('/api/prompts', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input),
+  });
+
+  const payload = (await response.json().catch(() => ({}))) as {
+    error?: string;
+    prompts?: SensorPrompt[];
+  };
+
+  if (!response.ok) {
+    throw new Error(payload.error || `Kunne ikke lage nye spørsmål (${response.status}).`);
+  }
+
+  return Array.isArray(payload.prompts) ? payload.prompts : [];
 }
 
 export async function evaluateWithGroq(

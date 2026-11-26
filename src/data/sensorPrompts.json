@@ -1,7 +1,74 @@
 [
   {
+    "id": "a2-oppvarming-meg-selv",
+    "level": "A2",
+    "taskType": "Oppvarming (1–2 min)",
+    "topic": "Om deg selv",
+    "promptNb": "Kan du fortelle helt kort om deg selv? Hvem er du, hvor kommer du fra, og hva gjør du til vanlig?",
+    "promptEnHint": "Tips: Dette er en oppvarming før prøven. Fortell om navn, hjemland, familie og hva du gjør på jobb eller skole.",
+    "followUpNb": "Hva liker du best å gjøre når du har fri?",
+    "targetConnectors": ["og", "men", "fordi", "nå", "også"],
+    "topicKeywords": ["heter", "kommer", "bor", "norge", "familie", "jobber", "skole", "norsk", "fritid"]
+  },
+  {
+    "id": "a2-oppgave-a-data-pc",
+    "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
+    "topic": "Data og PC på skolen",
+    "promptNb": "Kan du fortelle om hvordan du bruker data eller PC på skolen eller på norskkurset?",
+    "promptEnHint": "Tips: Fortell hva du bruker PC til, hvilke programmer eller nettsider du liker, og om det er lett eller vanskelig.",
+    "followUpNb": "Bruker du også PC eller mobil til å øve på norsk hjemme?",
+    "targetConnectors": ["først", "også", "fordi", "men", "for eksempel", "derfor"],
+    "topicKeywords": ["data", "pc", "datamaskin", "skole", "kurs", "skrive", "oppgaver", "internett", "program", "lære"]
+  },
+  {
+    "id": "a2-oppgave-a-penger",
+    "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
+    "topic": "Hva du bruker penger på",
+    "promptNb": "Kan du fortelle om hva du pleier å bruke penger på i hverdagen?",
+    "promptEnHint": "Tips: Nevn faste utgifter som mat, bolig og buss, og fortell hva du liker å kjøpe eller spare til.",
+    "followUpNb": "Synes du det er lett eller vanskelig å spare penger i Norge?",
+    "targetConnectors": ["først", "også", "men", "fordi", "for eksempel", "derfor"],
+    "topicKeywords": ["penger", "kjøper", "mat", "klær", "regninger", "butikk", "dyrt", "billig", "spare", "betaler"]
+  },
+  {
+    "id": "a2-oppgave-a-reise",
+    "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
+    "topic": "Et reisemål",
+    "promptNb": "Kan du fortelle om et sted du har lyst til å reise til?",
+    "promptEnHint": "Tips: Fortell hvor stedet ligger, hvem du vil reise med, hva du vil se og gjøre der, og hvorfor du valgte akkurat dette stedet.",
+    "followUpNb": "Hva liker du best: å reise til en stor by eller ut i naturen?",
+    "targetConnectors": ["fordi", "også", "deretter", "men", "for eksempel", "til slutt"],
+    "topicKeywords": ["reise", "sted", "land", "by", "ferie", "fly", "hotell", "se", "oppleve", "sommer"]
+  },
+  {
+    "id": "a2-oppgave-b-god-venn",
+    "level": "A2",
+    "taskType": "Oppgave B · Samtale",
+    "topic": "Å være en god venn",
+    "promptNb": "Hvordan kan man være en god venn? Fortell hva du mener er viktigst i et vennskap.",
+    "promptEnHint": "Tips: Snakk om å lytte, hjelpe hverandre, være ærlig og finne på hyggelige ting sammen.",
+    "followUpNb": "Hva pleier du og vennene dine å gjøre sammen når dere møtes?",
+    "targetConnectors": ["fordi", "også", "men", "for eksempel", "når", "derfor"],
+    "topicKeywords": ["venn", "vennskap", "hjelpe", "lytte", "snakke", "stole", "sammen", "tid", "hyggelig", "ærlig"]
+  },
+  {
+    "id": "a2-oppgave-b-bli-kjent",
+    "level": "A2",
+    "taskType": "Oppgave B · Samtale",
+    "topic": "Bli kjent med nye folk",
+    "promptNb": "Hva mener du er det beste man kan gjøre for å bli kjent med nye folk?",
+    "promptEnHint": "Tips: Gi forslag som språkkafé, trening, naboer, jobb eller hobbyer. Fortell hva som har fungert for deg.",
+    "followUpNb": "Synes du det er lett eller litt vanskelig å bli kjent med nye mennesker i Norge?",
+    "targetConnectors": ["for eksempel", "fordi", "men", "også", "hvis", "derfor"],
+    "topicKeywords": ["folk", "mennesker", "venner", "snakke", "nabo", "jobb", "kurs", "hobby", "trening", "invitere"]
+  },
+  {
     "id": "a2-hverdag",
     "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
     "topic": "Hverdag og fritid",
     "promptNb": "Fortell om en vanlig dag i livet ditt. Hva gjør du om morgenen, på jobb eller skole, og på ettermiddagen?",
     "promptEnHint": "Tips: Start med når du står opp, fortell hva du gjør på dagen, og avslutt med hva du liker å gjøre på kvelden.",
@@ -12,6 +79,7 @@
   {
     "id": "a2-mat-handlen",
     "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
     "topic": "Mat og matvaner",
     "promptNb": "Hva slags mat liker du å lage hjemme? Fortell om en rett du lager ofte, og hvorfor du liker den.",
     "promptEnHint": "Tips: Beskriv ingrediensene, når du lager retten, og hvorfor den smaker godt eller er sunn.",
@@ -20,9 +88,87 @@
     "topicKeywords": ["mat", "middag", "frokost", "lager", "kjøkken", "grønnsaker", "fisk", "smaker", "sunt"]
   },
   {
+    "id": "a2-bolig-nabolag",
+    "level": "A2",
+    "taskType": "Oppgave A · Fortelle",
+    "topic": "Bolig og nabolag",
+    "promptNb": "Kan du fortelle om stedet der du bor nå? Hva liker du godt med hjemmet og nabolaget ditt?",
+    "promptEnHint": "Tips: Beskriv boligen, hvem du bor med, hva som finnes i nærheten (butikk, buss, natur), og om du trives.",
+    "followUpNb": "Hvis du skulle flytte til et nytt sted, hva ville vært viktigst for deg?",
+    "targetConnectors": ["fordi", "også", "men", "for eksempel", "derfor"],
+    "topicKeywords": ["bor", "leilighet", "hus", "nabolag", "butikk", "buss", "stille", "trives", "rom", "natur"]
+  },
+  {
+    "id": "b1-oppgave-c-kropp-helse",
+    "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Kropp og helse",
+    "promptNb": "Synes du det er bra at folk er opptatt av kropp og helse? Hvorfor eller hvorfor ikke?",
+    "promptEnHint": "Tips: Si først hva du mener. Nevn både positive sider (sunn mat, trening, energi) og negative sider (press, stress).",
+    "followUpNb": "Hva synes du skolen eller samfunnet kan gjøre for at unge skal få et sunt forhold til kropp og helse?",
+    "targetConnectors": ["fordi", "på den ene siden", "på den andre siden", "men", "derfor", "for eksempel"],
+    "topicKeywords": ["kropp", "helse", "trening", "mat", "sunt", "press", "sosiale", "medier", "syk", "energi"]
+  },
+  {
+    "id": "b1-oppgave-c-kultur-hjemland",
+    "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Kultur fra hjemlandet",
+    "promptNb": "Synes du det er viktig å ta vare på kulturen fra hjemlandet ditt når du bor i Norge? Begrunn svaret ditt.",
+    "promptEnHint": "Tips: Snakk om språk, mat, tradisjoner og identitet, og hvordan man kan kombinere egen kultur med norsk kultur.",
+    "followUpNb": "Hvilke tradisjoner eller verdier fra ditt hjemland synes du det er ekstra fint å dele med folk i Norge?",
+    "targetConnectors": ["fordi", "samtidig", "selv om", "dessuten", "for eksempel", "derfor"],
+    "topicKeywords": ["kultur", "hjemland", "norge", "språk", "tradisjon", "mat", "barn", "identitet", "respekt", "integrering"]
+  },
+  {
+    "id": "b1-oppgave-c-utdanning",
+    "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Utdanning for ungdom",
+    "promptNb": "Synes du at alle ungdommer bør ta en utdanning? Hvorfor eller hvorfor ikke?",
+    "promptEnHint": "Tips: Diskuter trygg jobb, lønn og kunnskap, men også at noen lærer best gjennom praktisk arbeid eller fagbrev.",
+    "followUpNb": "Hva er forskjellen på å ta yrkesfag og å studere på universitet, og hva bør avgjøre valget?",
+    "targetConnectors": ["fordi", "selv om", "likevel", "for eksempel", "på den ene siden", "derfor"],
+    "topicKeywords": ["utdanning", "ungdom", "skole", "jobb", "fremtid", "yrkesfag", "studere", "kunnskap", "lønn", "velge"]
+  },
+  {
+    "id": "b1-oppgave-c-jobbe-mye",
+    "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Å jobbe veldig mye",
+    "promptNb": "Hva er positivt og negativt med å jobbe veldig mye?",
+    "promptEnHint": "Tips: Nevn fordeler som bedre økonomi og erfaring, og ulemper som lite tid til familie, søvn og helse.",
+    "followUpNb": "Hvordan kan en arbeidsplass sørge for at ansatte ikke blir utslitt?",
+    "targetConnectors": ["på den ene siden", "på den andre siden", "men", "samtidig", "derfor", "for eksempel"],
+    "topicKeywords": ["jobbe", "arbeid", "tid", "penger", "lønn", "familie", "stress", "helse", "sliten", "fritid"]
+  },
+  {
+    "id": "b1-oppgave-b-vennskap",
+    "level": "B1",
+    "taskType": "Oppgave B · Samtale",
+    "topic": "Gode venner i voksen alder",
+    "promptNb": "Hvordan kan man være en god venn, og hva gjør man for å beholde gode venner når alle har travle dager?",
+    "promptEnHint": "Tips: Snakk om å ta kontakt, stille opp når det trengs, og sette av tid selv i en travel hverdag.",
+    "followUpNb": "Er det forskjell på venner man har fra barndommen og venner man får som voksen?",
+    "targetConnectors": ["fordi", "selv om", "samtidig", "for eksempel", "derfor", "men"],
+    "topicKeywords": ["venn", "vennskap", "travel", "tid", "støtte", "tillit", "møtes", "kontakte", "hjelpe", "voksen"]
+  },
+  {
+    "id": "b1-oppgave-b-bli-kjent",
+    "level": "B1",
+    "taskType": "Oppgave B · Samtale",
+    "topic": "Nye venner på et nytt sted",
+    "promptNb": "Hva er det beste man kan gjøre for å bli kjent med nye folk når man flytter til et nytt sted eller nytt land?",
+    "promptEnHint": "Tips: Begrunn to-tre gode måter, som jobb, frivillig arbeid, idrett eller norskkurs, og si hvorfor de fungerer.",
+    "followUpNb": "Hva kan lokalsamfunnet gjøre for at nyinnflyttere lettere skal føle seg velkommen?",
+    "targetConnectors": ["for det første", "dessuten", "fordi", "for eksempel", "selv om", "til slutt"],
+    "topicKeywords": ["flytte", "kjent", "nye", "folk", "frivillig", "arbeid", "hobby", "velkommen", "språk", "fellesskap"]
+  },
+  {
     "id": "b1-arbeidsliv",
     "level": "B1",
-    "topic": "Arbeid og fritid",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Trivsel på jobb",
     "promptNb": "Mange mener at balansen mellom jobb og fritid er veldig viktig i Norge. Hva synes du er viktigst for å trives på jobb eller i studier?",
     "promptEnHint": "Tips: Snakk om arbeidstid, kolleger og pauser. Gi gjerne et eksempel fra ditt eget liv.",
     "followUpNb": "Hvordan tror du arbeidslivet kommer til å forandre seg med hjemmekontor og ny teknologi?",
@@ -32,6 +178,7 @@
   {
     "id": "b1-kollektiv",
     "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
     "topic": "Miljø og transport",
     "promptNb": "Bør det bli dyrere å kjøre bil i store byer for å få flere til å bruke kollektivtransport? Begrunn svaret ditt.",
     "promptEnHint": "Tips: Nevn både fordeler for miljøet og ulemper for familier eller folk som bor langt unna sentrum.",
@@ -40,8 +187,20 @@
     "topicKeywords": ["bil", "buss", "tog", "kollektiv", "miljø", "by", "bompenger", "dyrt", "klima", "sykle"]
   },
   {
+    "id": "b1-sosiale-medier",
+    "level": "B1",
+    "taskType": "Oppgave C · Synspunkt",
+    "topic": "Mobil og sosiale medier",
+    "promptNb": "Hva er positivt og negativt med at barn og unge bruker mye tid på mobil og sosiale medier?",
+    "promptEnHint": "Tips: Drøft kontakt med venner og læring mot mindre søvn, mobbing og mindre tid ute.",
+    "followUpNb": "Bør foreldre eller skolen ha strenge regler for mobilbruk? Hvorfor eller hvorfor ikke?",
+    "targetConnectors": ["på den ene siden", "på den andre siden", "selv om", "fordi", "derfor", "for eksempel"],
+    "topicKeywords": ["mobil", "sosiale", "medier", "barn", "unge", "venner", "skjerm", "søvn", "regler", "skole"]
+  },
+  {
     "id": "b2-digitalisering",
     "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
     "topic": "Teknologi og samfunn",
     "promptNb": "Kunstig intelligens og digitalisering endrer både utdanning og arbeidsliv raskt. Hvilke muligheter og risikoer ser du ved denne utviklingen?",
     "promptEnHint": "Tips: Drøft først fordeler (effektivitet, læring) og deretter utfordringer (personvern, arbeidsplasser, kildekritikk).",
@@ -52,11 +211,56 @@
   {
     "id": "b2-integrering",
     "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
     "topic": "Språk og inkludering",
     "promptNb": "Hvor stor rolle spiller språk i arbeidet med inkludering i det norske samfunnet, og hvilket ansvar har henholdsvis den enkelte og samfunnet?",
     "promptEnHint": "Tips: Del svaret i to deler: hva innvandrere kan gjøre selv, og hva arbeidsplasser og kommuner bør legge til rette for.",
     "followUpNb": "Hvordan kan arbeidsplasser og lokalmiljøer gjøre det lettere å praktisere norsk i hverdagen?",
     "targetConnectors": ["for det første", "for det andre", "selv om", "likevel", "derfor", "til slutt"],
     "topicKeywords": ["språk", "inkludering", "samfunn", "ansvar", "arbeidsplass", "kommune", "kurs", "fellesskap", "kultur"]
+  },
+  {
+    "id": "b2-arbeidstid-velferd",
+    "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
+    "topic": "Kortere arbeidstid og velferd",
+    "promptNb": "Bør vi jobbe færre timer i uka, for eksempel innføre sekstimersdag, selv om det kan påvirke lønn eller velferdstjenester? Drøft fordeler og ulemper.",
+    "promptEnHint": "Tips: Vurder helse, familie og likestilling opp mot mangel på arbeidskraft i helsevesen og økonomi.",
+    "followUpNb": "Hvilke yrker tror du det vil være vanskeligst å innføre kortere arbeidstid i?",
+    "targetConnectors": ["på den ene siden", "på den andre siden", "imidlertid", "ettersom", "likevel", "derimot"],
+    "topicKeywords": ["arbeidstid", "sekstimersdag", "velferd", "lønn", "helse", "økonomi", "produktivitet", "familie", "arbeidskraft"]
+  },
+  {
+    "id": "b2-kontantlost-samfunn",
+    "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
+    "topic": "Et kontantløst samfunn",
+    "promptNb": "I Norge betaler nesten alle med kort eller mobil. Er det positivt eller negativt at kontanter nesten forsvinner fra hverdagen?",
+    "promptEnHint": "Tips: Drøft effektivitet og mindre svart økonomi mot sårbarhet ved strømbrudd og eldre eller sårbare grupper.",
+    "followUpNb": "Bør butikker være pålagt ved lov å ta imot kontanter?",
+    "targetConnectors": ["for det første", "dessuten", "imidlertid", "derimot", "selv om", "til slutt"],
+    "topicKeywords": ["kontanter", "kort", "mobil", "digital", "betale", "personvern", "eldre", "sikkerhet", "økonomi", "samfunn"]
+  },
+  {
+    "id": "b2-forebyggende-helse",
+    "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
+    "topic": "Forebygging eller behandling",
+    "promptNb": "Bør det offentlige bruke mer penger på forebyggende helsearbeid enn på behandling på sykehus? Begrunn svaret ditt.",
+    "promptEnHint": "Tips: Skill mellom langsiktige gevinster ved trening og kosthold og akutte behov i sykehusene i dag.",
+    "followUpNb": "Hvor går grensen mellom myndighetenes ansvar og den enkeltes frihet til å velge livsstil?",
+    "targetConnectors": ["på den ene siden", "på den andre siden", "ettersom", "likevel", "dessuten", "derfor"],
+    "topicKeywords": ["helse", "forebygging", "sykehus", "behandling", "penger", "offentlig", "livsstil", "ansvar", "fremtid"]
+  },
+  {
+    "id": "b2-bolig-storby",
+    "level": "B2",
+    "taskType": "Ekstraoppgave · B2",
+    "topic": "Boligpriser i byene",
+    "promptNb": "Hva kan gjøres for at unge og folk med vanlig inntekt skal ha råd til å bo i store byer uten at det skaper nye problemer?",
+    "promptEnHint": "Tips: Diskuter nybygging, utleiemarked, kollektivtilbud og distriktspolitikk med saklige argumenter.",
+    "followUpNb": "Hvilke konsekvenser kan det få for en by hvis lærere, sykepleiere og studenter ikke har råd til å bo der?",
+    "targetConnectors": ["for det første", "for det andre", "imidlertid", "samtidig", "derfor", "til slutt"],
+    "topicKeywords": ["bolig", "priser", "by", "ungdom", "inntekt", "leie", "eie", "bygge", "ulike", "samfunn"]
   }
 ]

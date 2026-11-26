@@ -28,6 +28,12 @@ export interface GroqEvaluateRequestBody {
   readonly durationSeconds?: number;
 }
 
+export interface GroqPromptsRequestBody {
+  readonly level?: string;
+  readonly existingPrompts?: readonly string[];
+  readonly count?: number;
+}
+
 export interface TtsRequestBody {
   readonly text?: string;
 }
@@ -350,7 +356,8 @@ export async function handleEvaluateEndpoint(
   }
 
   const systemPrompt = [
-    'Du er en vennlig, tydelig og rettferdig norsk sensor på Norskprøven muntlig.',
+    'Du er en vennlig, tydelig og rettferdig norsk sensor på Norskprøven muntlig (A2–B1 og ekstraoppgaver B2).',
+    'Kjenn strukturen fra Norskprøven: Oppvarming (kort om seg selv), Oppgave A (A2 individuell: fortelle/beskrive, f.eks. bruk av PC/data, pengebruk, reisemål), Oppgave B (A2–B1 samtale: utveksle synspunkter, f.eks. god venn, bli kjent med nye folk), Oppgave C (B1 individuell: uttrykke og begrunne meninger, f.eks. kropp og helse, kultur fra hjemlandet, utdanning, jobbe mye), og B2 ekstraoppgaver (nyansert drøfting).',
     'Skriv ALL tilbakemelding på enkelt, klart og naturlig norsk bokmål (aldri på engelsk), tilpasset en innlærer.',
     'Vurder svaret opp mot oppgaven og målnivået (A2, B1 eller B2): innhold, sammenheng, lengde (mål 1,5–2 min), ordstilling (V2-regelen), kjønn (en/ei/et), bestemt form, preposisjoner og verbtid.',
     'Svar KUN med gyldig JSON i dette formatet:',
@@ -407,6 +414,241 @@ export async function handleEvaluateEndpoint(
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Kunne ikke kontakte Groq.';
+    sendJson(res, 502, { error: message });
+  }
+}
+
+const OFFICIAL_NORSKPROVEN_REFERENCE = [
+  'Referanseeksempler fra offisiell Norskprøven muntlig (nivå A2–B1 og ekstraoppgave B2):',
+  '- Oppvarming (1–2 min, kort om seg selv): Fortell helt kort om deg selv.',
+  '- OPPGAVE A (Individuell A2 – fortelle / beskrive, 2–3 min):',
+  '  1. Kan du fortelle om hvordan du bruker data/pc på skolen?',
+  '  2. Kan du fortelle om hva du pleier å bruke penger på?',
+  '  3. Kan du fortelle om et sted du har lyst å reise til?',
+  '- OPPGAVE B (Samtale A2–B1 – utveksle synspunkter / meninger, 5–7 min):',
+  '  1. Kan dere snakke sammen om hvordan man kan være en god venn?',
+  '  2. Hva mener dere er det beste man kan gjøre for å bli kjent med nye folk?',
+  '- OPPGAVE C (Individuell B1 – uttrykke synspunkter / meninger, 2–3 min):',
+  '  1. Synes du det er bra at folk er opptatt av kropp og helse? Hvorfor/hvorfor ikke?',
+  '  2. Synes du det er viktig å ta vare på kulturen fra hjemlandet ditt når du bor i Norge?',
+  '  3. Synes du at alle ungdommer bør ta en utdanning?',
+  '  4. Hva er positivt og negativt med å jobbe veldig mye?',
+  '- Ekstraoppgaver (B2-nivå): Utfordrende spørsmål der kandidaten må drøfte flere sider, veie fordeler og ulemper, og begrunne nyansert.',
+].join('\n');
+
+function normalizeGeneratedPrompts(
+  rawContent: string,
+  level: 'A2' | 'B1' | 'B2',
+): Array<{
+  readonly id: string;
+  readonly level: 'A2' | 'B1' | 'B2';
+  readonly taskType: string;
+  readonly topic: string;
+  readonly promptNb: string;
+  readonly promptEnHint: string;
+  readonly followUpNb: string;
+  readonly targetConnectors: readonly string[];
+  readonly topicKeywords: readonly string[];
+  readonly isAiGenerated: true;
+}> {
+  const trimmed = rawContent.trim();
+  const start = trimmed.indexOf('{');
+  const end = trimmed.lastIndexOf('}');
+  const jsonSlice = start !== -1 && end > start ? trimmed.slice(start, end + 1) : trimmed;
+
+  const parsed = JSON.parse(jsonSlice) as { prompts?: unknown };
+  const rawList = Array.isArray(parsed.prompts) ? parsed.prompts : [];
+
+  const defaultTaskType =
+    level === 'A2'
+      ? 'Oppgave A · Fortelle'
+      : level === 'B1'
+        ? 'Oppgave C · Synspunkt'
+        : 'Ekstraoppgave · B2';
+
+  const fallbackConnectors =
+    level === 'A2'
+      ? ['først', 'også', 'fordi', 'men', 'for eksempel']
+      : level === 'B1'
+        ? ['fordi', 'på den ene siden', 'på den andre siden', 'derfor', 'for eksempel']
+        : ['på den ene siden', 'på den andre siden', 'imidlertid', 'ettersom', 'likevel'];
+
+  const stamp = Date.now();
+  return rawList
+    .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+    .slice(0, 6)
+    .map((item, idx) => {
+      const topic =
+        typeof item.topic === 'string' && item.topic.trim()
+          ? item.topic.trim().slice(0, 60)
+          : `Øvingsoppgave ${idx + 1}`;
+      const promptNb = typeof item.promptNb === 'string' ? item.promptNb.trim() : '';
+      const taskType =
+        typeof item.taskType === 'string' && item.taskType.trim()
+          ? item.taskType.trim().slice(0, 40)
+          : defaultTaskType;
+      const hintRaw =
+        typeof item.promptEnHint === 'string' && item.promptEnHint.trim()
+          ? item.promptEnHint.trim()
+          : 'Tips: Snakk tydelig, bruk konkrete eksempler og forklar hvorfor du mener dette.';
+      const promptEnHint = hintRaw.startsWith('Tips:') ? hintRaw : `Tips: ${hintRaw}`;
+      const followUpNb =
+        typeof item.followUpNb === 'string' && item.followUpNb.trim()
+          ? item.followUpNb.trim()
+          : 'Kan du gi et konkret eksempel fra hverdagen eller Norge?';
+      const connectors = Array.isArray(item.targetConnectors)
+        ? item.targetConnectors
+            .filter((c): c is string => typeof c === 'string' && c.trim().length > 0)
+            .map((c) => c.trim().toLowerCase())
+            .slice(0, 6)
+        : [];
+      const keywords = Array.isArray(item.topicKeywords)
+        ? item.topicKeywords
+            .filter((k): k is string => typeof k === 'string' && k.trim().length > 0)
+            .map((k) => k.trim().toLowerCase())
+            .slice(0, 10)
+        : [];
+      const slug = topic
+        .toLowerCase()
+        .replaceAll(/[^a-zæøå0-9]+/g, '-')
+        .replaceAll(/^-|-$/g, '')
+        .slice(0, 24);
+
+      return {
+        id: `${level.toLowerCase()}-ai-${stamp}-${idx}-${slug || 'oppgave'}`,
+        level,
+        taskType,
+        topic,
+        promptNb,
+        promptEnHint,
+        followUpNb,
+        targetConnectors: connectors.length > 0 ? connectors : fallbackConnectors,
+        topicKeywords: keywords.length > 0 ? keywords : ['norge', 'hverdag', 'viktig', 'fordi'],
+        isAiGenerated: true as const,
+      };
+    })
+    .filter((item) => item.promptNb.length >= 12);
+}
+
+export async function handlePromptsEndpoint(
+  req: IncomingMessage,
+  res: ServerResponse,
+  env: ServerEnv,
+): Promise<void> {
+  if ((req.method ?? 'GET').toUpperCase() !== 'POST') {
+    sendJson(res, 405, { error: 'Metode ikke tillatt.' });
+    return;
+  }
+
+  if (!isRequestAuthenticated(req, env)) {
+    sendJson(res, 401, { error: 'Ikke innlogget. Lås opp med passord først.' });
+    return;
+  }
+
+  const apiKey = env.GROQ_API_KEY?.trim();
+  if (!apiKey) {
+    sendJson(res, 503, {
+      error: 'GROQ_API_KEY mangler i .env / Vercel.',
+    });
+    return;
+  }
+
+  let body: GroqPromptsRequestBody;
+  try {
+    body = await readJsonBody<GroqPromptsRequestBody>(req);
+  } catch {
+    sendJson(res, 400, { error: 'Ugyldig JSON.' });
+    return;
+  }
+
+  const level: 'A2' | 'B1' | 'B2' =
+    body.level === 'A2' || body.level === 'B2' ? body.level : 'B1';
+  const count =
+    typeof body.count === 'number' && Number.isFinite(body.count)
+      ? Math.max(1, Math.min(6, Math.round(body.count)))
+      : 4;
+  const existingPrompts = Array.isArray(body.existingPrompts)
+    ? body.existingPrompts
+        .filter((p): p is string => typeof p === 'string' && p.trim().length > 0)
+        .slice(0, 30)
+    : [];
+
+  const levelGuidance =
+    level === 'A2'
+      ? 'Lag oppgaver i stil med Oppgave A (fortelle og beskrive fra egen hverdag: f.eks. klær, familie, transport, fritid, læring, helse) og enkle Oppgave B-tema (utveksle mening med en annen).'
+      : level === 'B1'
+        ? 'Lag oppgaver i stil med Oppgave C (uttrykke og begrunne egne synspunkter/meninger, fordeler og ulemper, "Synes du at...", "Hvorfor/hvorfor ikke?") og Oppgave B-samtale.'
+        : 'Lag ekstraoppgaver på B2-nivå som krever drøfting av flere sider, samfunnsspørsmål, nyanser og argumentasjon.';
+
+  const systemPrompt = [
+    'Du er eksamensforfatter og norsk sensor for Norskprøven muntlig.',
+    OFFICIAL_NORSKPROVEN_REFERENCE,
+    'Ta direkte inspirasjon fra stilen, lengden og vanskelighetsgraden i disse offisielle eksempeloppgavene.',
+    'Skriv ALT på enkelt, klart og naturlig norsk bokmål.',
+    'Ikke gjenta oppgavene som allerede finnes i listen.',
+    'Svar KUN med gyldig JSON i dette formatet:',
+    '{"prompts":[{"topic":"Kort tema (2-4 ord)","taskType":"Oppgave A · Fortelle | Oppgave B · Samtale | Oppgave C · Synspunkt | Ekstraoppgave · B2","promptNb":"Selveste oppgavespørsmålet på naturlig norsk bokmål (1-2 setninger)","promptEnHint":"Tips: Enkel hjelpetekst på norsk for hva innlæreren kan snakke om.","followUpNb":"Ett naturlig oppfølgingsspørsmål fra sensor.","targetConnectors":["fordi","men","for eksempel"],"topicKeywords":["ord1","ord2","ord3"]}]}',
+  ].join('\n');
+
+  const userPrompt = [
+    `Ønsket nivå: ${level}`,
+    `Antall nye lignende øvingsoppgaver: ${count}`,
+    levelGuidance,
+    existingPrompts.length > 0
+      ? `Ikke gjenta disse eksisterende oppgavene:\n- ${existingPrompts.join('\n- ')}`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  try {
+    const groqRes = await fetch(GROQ_CHAT_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        temperature: 0.75,
+        max_completion_tokens: 1800,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+      }),
+    });
+
+    if (!groqRes.ok) {
+      const errorText = await groqRes.text();
+      sendJson(res, groqRes.status, {
+        error: `Groq-feil (${groqRes.status}): ${errorText.slice(0, 300)}`,
+      });
+      return;
+    }
+
+    const groqData = (await groqRes.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    const content = groqData.choices?.[0]?.message?.content ?? '';
+    if (!content) {
+      sendJson(res, 502, { error: 'Tomt svar fra Groq.' });
+      return;
+    }
+
+    const prompts = normalizeGeneratedPrompts(content, level);
+    if (prompts.length === 0) {
+      sendJson(res, 502, { error: 'Kunne ikke tolke nye oppgaver fra AI-svaret.' });
+      return;
+    }
+
+    sendJson(res, 200, {
+      prompts,
+      model: GROQ_MODEL,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Kunne ikke lage nye spørsmål med Groq.';
     sendJson(res, 502, { error: message });
   }
 }

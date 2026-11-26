@@ -11,12 +11,14 @@ export type SpeakingTarget = 'prompt' | 'feedback' | 'followup' | null;
 export interface SensorPrompt {
   readonly id: string;
   readonly level: CefrLevel;
+  readonly taskType?: string;
   readonly topic: string;
   readonly promptNb: string;
   readonly promptEnHint: string;
   readonly followUpNb: string;
   readonly targetConnectors: readonly string[];
   readonly topicKeywords: readonly string[];
+  readonly isAiGenerated?: boolean;
 }
 
 export type SensorRecordingPhase =
@@ -119,6 +121,10 @@ export interface SensorRuntimeState {
   readonly showHint: boolean;
   readonly showFollowUp: boolean;
   readonly showSettings: boolean;
+  readonly showPromptList: boolean;
+  readonly customPrompts: readonly SensorPrompt[];
+  readonly generatingPrompts: boolean;
+  readonly promptGenError: string | null;
   readonly speakingTarget: SpeakingTarget;
   readonly ttsStatusMessage: string | null;
 }
