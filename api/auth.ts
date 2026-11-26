@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { handleAuthEndpoint } from '../server/apiHandlers';
+import { handleAuthEndpoint } from '../server/apiHandlers.js';
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
   await handleAuthEndpoint(req, res, {

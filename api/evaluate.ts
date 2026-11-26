@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { handleEvaluateEndpoint } from '../server/apiHandlers';
+import { handleEvaluateEndpoint } from '../server/apiHandlers.js';
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
   await handleEvaluateEndpoint(req, res, {
