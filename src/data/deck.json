@@ -1,0 +1,52 @@
+[
+  {
+    "id": "nb-kjaere",
+    "word": "kjære",
+    "ipa": "/çæːrə/",
+    "partOfSpeech": "adjektiv",
+    "english": "kjær, høyt verdsatt (dear)",
+    "exampleNb": "Kjære venn, hvordan går det?",
+    "exampleEn": "Brukes varmt når du snakker til en god venn eller familie.",
+    "phoneticTip": "Start med en myk «kj»-lyd [ç] med tungespissen nede – aldri «skj» [ʂ]."
+  },
+  {
+    "id": "nb-skjott",
+    "word": "skjøtt",
+    "ipa": "/ʂøtː/",
+    "partOfSpeech": "verb",
+    "english": "passet på, tatt hånd om (tended)",
+    "exampleNb": "Oppgaven ble skjøtt med stor presisjon.",
+    "exampleEn": "Betyr at noen gjorde en oppgave nøye og ordentlig.",
+    "phoneticTip": "Start med en rund, tilbaketrukket «skj»-lyd [ʂ], rund leppene på «ø» og hold dobbel «tt»."
+  },
+  {
+    "id": "nb-bilen",
+    "word": "bilen",
+    "ipa": "/ˈbiːlən/",
+    "partOfSpeech": "substantiv",
+    "english": "en bil i bestemt form (the car)",
+    "exampleNb": "Bilen står parkert utenfor huset.",
+    "exampleEn": "Bestemt form entall av «en bil».",
+    "phoneticTip": "Hold den lange «i»-lyden [iː] tydelig før en lett «l» og svak «-en»."
+  },
+  {
+    "id": "nb-hore",
+    "word": "høre",
+    "ipa": "/ˈhøːrə/",
+    "partOfSpeech": "verb",
+    "english": "å oppfatte lyd eller lytte (to hear)",
+    "exampleNb": "Kan du høre meg tydelig nå?",
+    "exampleEn": "Brukes når du sjekker om noen får med seg det du sier.",
+    "phoneticTip": "Hold leppene godt rundet på lang «ø» [øː] og rull lett på «r»."
+  },
+  {
+    "id": "nb-gjore",
+    "word": "gjøre",
+    "ipa": "/ˈjøːrə/",
+    "partOfSpeech": "verb",
+    "english": "å utføre eller skape noe (to do / make)",
+    "exampleNb": "Hva skal vi gjøre i morgen?",
+    "exampleEn": "Et av de vanligste norske verbene i hverdagen.",
+    "phoneticTip": "Bokstaven «g» i «gj» er stum foran «ø» – si en ren «j»-lyd inn i lang «ø» [øː]."
+  }
+]

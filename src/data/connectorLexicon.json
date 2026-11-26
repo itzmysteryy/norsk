@@ -1,0 +1,122 @@
+[
+  {
+    "id": "nb-conn-fordi",
+    "word": "fordi",
+    "ipa": "/fɔˈɖiː/",
+    "partOfSpeech": "bindeord",
+    "english": "forklarer årsak eller grunn (because)",
+    "exampleNb": "Jeg liker denne jobben fordi kollegene er hjelpsomme.",
+    "exampleEn": "Brukes når du vil si hvorfor noe skjer.",
+    "phoneticTip": "Trykket ligger på siste stavelse [-ˈdiː]; «rd» smelter ofte sammen til én lyd."
+  },
+  {
+    "id": "nb-conn-derfor",
+    "word": "derfor",
+    "ipa": "/ˈdærfɔr/",
+    "partOfSpeech": "bindeord",
+    "english": "viser resultat eller følge (therefore)",
+    "exampleNb": "Det regnet kraftig, derfor tok jeg bussen.",
+    "exampleEn": "Husk V2-regelen: verbet kommer rett etter «derfor» («derfor tok jeg»).",
+    "phoneticTip": "Husk omvendt ordstilling: «derfor tok jeg», ikke «derfor jeg tok»."
+  },
+  {
+    "id": "nb-conn-selv-om",
+    "word": "selv om",
+    "ipa": "/ˈsel ɔm/",
+    "partOfSpeech": "bindeord",
+    "english": "viser motsetning (even though)",
+    "exampleNb": "Vi gikk en tur selv om det var kaldt.",
+    "exampleEn": "Brukes når noe skjer til tross for noe annet.",
+    "phoneticTip": "Bokstaven «v» i «selv» er ofte stum i vanlig tale: [ˈsel ɔm]."
+  },
+  {
+    "id": "nb-conn-dessuten",
+    "word": "dessuten",
+    "ipa": "/dɛsˈʉːtən/",
+    "partOfSpeech": "bindeord",
+    "english": "legger til et ekstra poeng (moreover)",
+    "exampleNb": "Kollektivtransport er billigere, og dessuten bedre for miljøet.",
+    "exampleEn": "Fint ord når du vil gi enda en grunn.",
+    "phoneticTip": "Hold den trange, rundede «u»-lyden [ʉː] i «-ut-»."
+  },
+  {
+    "id": "nb-conn-likevel",
+    "word": "likevel",
+    "ipa": "/ˈliːkəʋɛl/",
+    "partOfSpeech": "bindeord",
+    "english": "til tross for det (nevertheless)",
+    "exampleNb": "Det var dyrt, men jeg kjøpte det likevel.",
+    "exampleEn": "Viser at du gjør noe selv om det finnes en ulempe.",
+    "phoneticTip": "Hold lang «i» i starten med trykk på første stavelse."
+  },
+  {
+    "id": "nb-conn-imidlertid",
+    "word": "imidlertid",
+    "ipa": "/ɪˈmɪdləʈiː/",
+    "partOfSpeech": "bindeord",
+    "english": "på den andre siden (however)",
+    "exampleNb": "Teknologien gir nye muligheter; den skaper imidlertid også utfordringer.",
+    "exampleEn": "Formelt og godt B2-ord for å vise kontrast.",
+    "phoneticTip": "Siste «d» i «-tid» er stum i vanlig tale."
+  },
+  {
+    "id": "nb-conn-derimot",
+    "word": "derimot",
+    "ipa": "/ˈdæriˌmuːt/",
+    "partOfSpeech": "bindeord",
+    "english": "i motsetning til dette (by contrast)",
+    "exampleNb": "Om sommeren er det lyst; om vinteren er det derimot mørkt.",
+    "exampleEn": "Brukes for å sammenligne to ulike ting.",
+    "phoneticTip": "«o» i «-mot» uttales som en tydelig lang [uː]-lyd."
+  },
+  {
+    "id": "nb-conn-ettersom",
+    "word": "ettersom",
+    "ipa": "/ˈɛtəʂɔm/",
+    "partOfSpeech": "bindeord",
+    "english": "siden, fordi (since / as)",
+    "exampleNb": "Ettersom flere jobber hjemmefra, endrer bybildet seg.",
+    "exampleEn": "Godt alternativ til «fordi» i starten av en setning.",
+    "phoneticTip": "«rs» mellom «etter» og «som» blir ofte én «sj»-lyd [ʂ]."
+  },
+  {
+    "id": "nb-conn-samtidig",
+    "word": "samtidig",
+    "ipa": "/sɑmˈtiːdɪ/",
+    "partOfSpeech": "bindeord",
+    "english": "på samme tid (at the same time)",
+    "exampleNb": "Vi må kutte utslipp, og samtidig sikre gode arbeidsplasser.",
+    "exampleEn": "Viser to ting som skjer eller gjelder samtidig.",
+    "phoneticTip": "Endelsen «-ig» uttales uten «g» til slutt: [-ɪ]."
+  },
+  {
+    "id": "nb-conn-for-eksempel",
+    "word": "for eksempel",
+    "ipa": "/fɔr ɛkˈsɛmpəl/",
+    "partOfSpeech": "uttrykk",
+    "english": "når du gir et konkret døme (for example)",
+    "exampleNb": "Man kan for eksempel sykle til jobben om sommeren.",
+    "exampleEn": "Veldig nyttig for å fylle ut svaret på muntlig prøve.",
+    "phoneticTip": "Trykket ligger på «-sem-» i «eksempel»."
+  },
+  {
+    "id": "nb-conn-pa-den-ene-siden",
+    "word": "på den ene siden",
+    "ipa": "/pɔ dɛn ˈeːnə ˈsiːdən/",
+    "partOfSpeech": "uttrykk",
+    "english": "når du ser to sider av en sak (on one hand)",
+    "exampleNb": "På den ene siden sparer det tid, men på den andre siden øker stresset.",
+    "exampleEn": "Sterkt B1/B2-uttrykk for å drøfte fordeler og ulemper.",
+    "phoneticTip": "Husk å runde leppene på «å» i «på» [ɔ]."
+  },
+  {
+    "id": "nb-conn-til-slutt",
+    "word": "til slutt",
+    "ipa": "/tɪl ˈslʉtː/",
+    "partOfSpeech": "uttrykk",
+    "english": "avslutningsvis (finally)",
+    "exampleNb": "Til slutt vil jeg oppsummere hovedpoenget mitt.",
+    "exampleEn": "Hjelper deg å runde av svaret ryddig før tiden er ute.",
+    "phoneticTip": "Rund leppene på «u» [ʉ] og hold dobbel «tt» i «slutt»."
+  }
+]

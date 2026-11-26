@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a2-hverdag",
+    "level": "A2",
+    "topic": "Hverdag og fritid",
+    "promptNb": "Fortell om en vanlig dag i livet ditt. Hva gjør du om morgenen, på jobb eller skole, og på ettermiddagen?",
+    "promptEnHint": "Tips: Start med når du står opp, fortell hva du gjør på dagen, og avslutt med hva du liker å gjøre på kvelden.",
+    "followUpNb": "Hva liker du best å gjøre i helgene når du har fri?",
+    "targetConnectors": ["først", "deretter", "etterpå", "fordi", "men", "til slutt"],
+    "topicKeywords": ["morgen", "jobb", "skole", "ettermiddag", "middag", "trener", "venner", "sover", "klokka"]
+  },
+  {
+    "id": "a2-mat-handlen",
+    "level": "A2",
+    "topic": "Mat og matvaner",
+    "promptNb": "Hva slags mat liker du å lage hjemme? Fortell om en rett du lager ofte, og hvorfor du liker den.",
+    "promptEnHint": "Tips: Beskriv ingrediensene, når du lager retten, og hvorfor den smaker godt eller er sunn.",
+    "followUpNb": "Spiser du ofte ute på restaurant, eller foretrekker du å lage mat selv?",
+    "targetConnectors": ["fordi", "også", "men", "for eksempel", "derfor"],
+    "topicKeywords": ["mat", "middag", "frokost", "lager", "kjøkken", "grønnsaker", "fisk", "smaker", "sunt"]
+  },
+  {
+    "id": "b1-arbeidsliv",
+    "level": "B1",
+    "topic": "Arbeid og fritid",
+    "promptNb": "Mange mener at balansen mellom jobb og fritid er veldig viktig i Norge. Hva synes du er viktigst for å trives på jobb eller i studier?",
+    "promptEnHint": "Tips: Snakk om arbeidstid, kolleger og pauser. Gi gjerne et eksempel fra ditt eget liv.",
+    "followUpNb": "Hvordan tror du arbeidslivet kommer til å forandre seg med hjemmekontor og ny teknologi?",
+    "targetConnectors": ["fordi", "derfor", "for eksempel", "på den ene siden", "selv om", "dessuten"],
+    "topicKeywords": ["jobb", "fritid", "balanse", "kolleger", "arbeidsmiljø", "hjemmekontor", "stress", "ferie", "trives"]
+  },
+  {
+    "id": "b1-kollektiv",
+    "level": "B1",
+    "topic": "Miljø og transport",
+    "promptNb": "Bør det bli dyrere å kjøre bil i store byer for å få flere til å bruke kollektivtransport? Begrunn svaret ditt.",
+    "promptEnHint": "Tips: Nevn både fordeler for miljøet og ulemper for familier eller folk som bor langt unna sentrum.",
+    "followUpNb": "Hvilke utfordringer kan høyere bompenger skape for folk som bor utenfor sentrum?",
+    "targetConnectors": ["fordi", "derfor", "men", "samtidig", "likevel", "for eksempel"],
+    "topicKeywords": ["bil", "buss", "tog", "kollektiv", "miljø", "by", "bompenger", "dyrt", "klima", "sykle"]
+  },
+  {
+    "id": "b2-digitalisering",
+    "level": "B2",
+    "topic": "Teknologi og samfunn",
+    "promptNb": "Kunstig intelligens og digitalisering endrer både utdanning og arbeidsliv raskt. Hvilke muligheter og risikoer ser du ved denne utviklingen?",
+    "promptEnHint": "Tips: Drøft først fordeler (effektivitet, læring) og deretter utfordringer (personvern, arbeidsplasser, kildekritikk).",
+    "followUpNb": "Bør skoler og universiteter begrense bruken av digitale verktøy, eller tilpasse eksamensformene?",
+    "targetConnectors": ["på den ene siden", "på den andre siden", "imidlertid", "dessuten", "derimot", "ettersom", "til slutt"],
+    "topicKeywords": ["teknologi", "digital", "kunstig", "utdanning", "arbeid", "risiko", "muligheter", "effektiv", "personvern", "kritisk"]
+  },
+  {
+    "id": "b2-integrering",
+    "level": "B2",
+    "topic": "Språk og inkludering",
+    "promptNb": "Hvor stor rolle spiller språk i arbeidet med inkludering i det norske samfunnet, og hvilket ansvar har henholdsvis den enkelte og samfunnet?",
+    "promptEnHint": "Tips: Del svaret i to deler: hva innvandrere kan gjøre selv, og hva arbeidsplasser og kommuner bør legge til rette for.",
+    "followUpNb": "Hvordan kan arbeidsplasser og lokalmiljøer gjøre det lettere å praktisere norsk i hverdagen?",
+    "targetConnectors": ["for det første", "for det andre", "selv om", "likevel", "derfor", "til slutt"],
+    "topicKeywords": ["språk", "inkludering", "samfunn", "ansvar", "arbeidsplass", "kommune", "kurs", "fellesskap", "kultur"]
+  }
+]
